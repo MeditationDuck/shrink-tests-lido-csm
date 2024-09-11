@@ -1,0 +1,9 @@
+[submodule "csm"]
+	path = csm
+	url = git@github.com:lidofinance/community-staking-module.git
+[submodule "core"]
+	path = core
+	url = git@github.com:lidofinance/core.git
+[submodule "easy-track"]
+	path = easy-track
+	url = https://github.com/lidofinance/easy-track.git

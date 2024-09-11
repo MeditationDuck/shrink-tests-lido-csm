@@ -1,0 +1,9 @@
+
+.wake
+.env
+pytypes
+__pycache__/
+*.py[cod]
+.hypothesis/
+wake-coverage.cov
+bin
