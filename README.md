@@ -23,5 +23,4 @@ This repository serves as an example of tests written in a development and testi
 2. `wake test tests/test_csm_deployment.py` to perform deployment verification for CSM
 3. `wake test tests/test_sr_deployment.py` to perform deployment verification for Staking Router
 
-Requires `wake` version `4.13.0` or later.
-Tested with `anvil` version `anvil 0.2.0 (88e18ef 2024-10-11T15:18:57.052041000Z)`. Fuzz tests expect a local Ethereum mainnet node running at http://localhost:8545 synchronized to the block `20935461` or later.
+Tested with `wake` version `4.14.1` and `anvil` version `anvil 0.2.0 (00efa0d 2024-12-09T00:29:01.834942000Z)`. Fuzz tests expect a local Ethereum mainnet node running at http://localhost:8545 synchronized to the block `20935461` or later.

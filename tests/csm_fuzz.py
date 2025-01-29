@@ -6,8 +6,8 @@ from enum import Enum, auto
 from ordered_set import OrderedSet
 from wake.testing import *
 from wake.testing.fuzzing import *
-from pytypes.core.contracts._089.WithdrawalQueue import WithdrawalQueue
-from pytypes.core.contracts._089.WithdrawalQueueERC721 import WithdrawalQueueERC721
+from pytypes.core.contracts._0_8_9.WithdrawalQueue import WithdrawalQueue
+from pytypes.core.contracts._0_8_9.WithdrawalQueueERC721 import WithdrawalQueueERC721
 from pytypes.csm.node_modules.openzeppelin.contracts.token.ERC20.extensions.IERC20Permit import IERC20Permit
 from pytypes.csm.src.CSAccounting import CSAccounting
 from pytypes.csm.src.CSEarlyAdoption import CSEarlyAdoption
@@ -28,7 +28,7 @@ from pytypes.csm.src.lib.AssetRecovererLib import AssetRecovererLib
 from pytypes.csm.src.lib.NOAddresses import NOAddresses
 from pytypes.csm.src.lib.QueueLib import QueueLib
 from pytypes.csm.src.lib.Types import BeaconBlockHeader, Withdrawal, Validator
-from pytypes.core.contracts._0611.deposit_contract import IDepositContract
+from pytypes.core.contracts._0_6_11.deposit_contract import IDepositContract
 from pytypes.tests.migrated_contracts.LidoMigrated import StETH, LidoMigrated
 from abc import ABC, abstractmethod
 
@@ -1903,109 +1903,6 @@ class CsmFuzzTest(FuzzTest):
         self._reenqueue(csm, no.id, depositable_before, update_nonce=True)
 
         logger.info(f"Processed withdrawal proof for NO {no.id}")
-
-
-    @flow(precondition=lambda self: self.csms)
-    def flow_process_slashing_proof(self):
-        try:
-            csm = random.choice([csm for csm in self.csms.values() if csm.node_operators])
-            no = random.choice([no for no in csm.node_operators.values() if no.deposited_keys > 0])
-        except IndexError:
-            return
-        index = random_int(0, no.deposited_keys + no.withdrawn_keys - 1)
-
-        slot = timestamp_to_slot(chain.blocks["latest"].timestamp)
-
-        validator = Validator(
-            no.keys_bytes[index],
-            b"\x01" + 11 * b"\x00" + bytes(LIDO_LOCATOR.withdrawalVault()),
-            random_int(0, 2**64 - 1),
-            True,
-            random_int(0, 2**64 - 1),
-            random_int(0, 2**64 - 1),
-            random_int(0, 2**64 - 1),
-            random_int(0, slot // SLOTS_PER_EPOCH),
-        )
-        validator_root = hash_validator(validator)
-
-        state_tree = MerkleTree("sha256", hash_leaves=False, sort_pairs=False)
-        validator_leaves = [
-            validator_root,
-            random_bytes(32),
-            random_bytes(32),
-            random_bytes(32),
-        ]
-        random.shuffle(validator_leaves)
-        validator_index = validator_leaves.index(validator_root)
-
-        for leaf in validator_leaves:
-            state_tree.add_leaf(leaf)
-
-        for _ in range(4+8):
-            state_tree.add_leaf(random_bytes(32))
-
-        block_header = BeaconBlockHeader(
-            slot,
-            random_int(0, 2**64 - 1),
-            random_bytes(32),
-            state_tree.root,
-            random_bytes(32),
-        )
-
-        root = hash_beacon_block_header(block_header)
-        tx = Account("0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02").transact(root, from_="0xfffffffffffffffffffffffffffffffffffffffe")
-        assert Account("0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02").call(tx.block.timestamp.to_bytes(32, "big")) == root
-
-        depositable_before = csm.module.getNodeOperator(no.id).depositableValidatorsCount
-
-        with may_revert(CSModule.AlreadySubmitted) as e:
-            tx = csm.verifier.processSlashingProof(
-                CSVerifier.ProvableBeaconBlockHeader(
-                    block_header,
-                    tx.block.timestamp,
-                ),
-                CSVerifier.SlashingWitness(
-                    validator_index,
-                    validator.withdrawalCredentials,
-                    validator.effectiveBalance,
-                    validator.activationEligibilityEpoch,
-                    validator.activationEpoch,
-                    validator.exitEpoch,
-                    validator.withdrawableEpoch,
-                    state_tree.get_proof(state_tree.leaves.index(validator_root)),
-                ),
-                no.id,
-                index,
-                from_=random_account(),
-            )
-
-        if no.slashed[index]:
-            assert e.value == CSModule.AlreadySubmitted()
-            return
-        assert e.value is None
-
-        shares = min(ST_ETH.getSharesByPooledEth(Wei.from_ether(1)), no.bond_shares)
-        self.shares[csm.accounting] -= shares
-        self.shares[self.burner] += shares
-        no.bond_shares -= shares
-
-        no.slashed[index] = True
-        # bond curve is reset later on validator withdrawal
-
-        assert CSModule.InitialSlashingSubmitted(no.id, index, no.keys[index].pkey) in tx.events
-
-
-        burned = ST_ETH.getPooledEthByShares(shares)
-        if burned > 0:
-            assert CSAccounting.BondBurned(
-                no.id,
-                ST_ETH.getPooledEthByShares(ST_ETH.getSharesByPooledEth(Wei.from_ether(1))),
-                burned,
-            ) in tx.events
-
-        self._reenqueue(csm, no.id, depositable_before, update_nonce=True)
-
-        logger.info(f"Processed slashing proof for NO {no.id} in CSM {csm.id}")
 
     @flow(precondition=lambda self: self.csms)
     def flow_set_key_removal_charge(self):

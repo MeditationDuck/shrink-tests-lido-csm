@@ -4,10 +4,10 @@ import wake.deployment
 from wake.testing import *
 
 from pytypes.core.contracts.common.lib.MinFirstAllocationStrategy import MinFirstAllocationStrategy
-from pytypes.core.contracts._089.StakingRouter import StakingRouter
-from pytypes.core.contracts._089.DepositSecurityModule import DepositSecurityModule
-from pytypes.core.contracts._089.oracle.AccountingOracle import AccountingOracle
-from pytypes.core.contracts._089.sanity_checks.OracleReportSanityChecker import OracleReportSanityChecker, LimitsList
+from pytypes.core.contracts._0_8_9.StakingRouter import StakingRouter
+from pytypes.core.contracts._0_8_9.DepositSecurityModule import DepositSecurityModule
+from pytypes.core.contracts._0_8_9.oracle.AccountingOracle import AccountingOracle
+from pytypes.core.contracts._0_8_9.sanity_checks.OracleReportSanityChecker import OracleReportSanityChecker, LimitsList
 
 
 pre_chain = Chain()

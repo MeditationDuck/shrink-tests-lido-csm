@@ -4,9 +4,9 @@ from wake.testing import *
 from wake.testing.fuzzing import random_bytes
 from dataclasses import dataclass
 
-from pytypes.core.contracts._089.proxy.OssifiableProxy import OssifiableProxy
+from pytypes.core.contracts._0_8_9.proxy.OssifiableProxy import OssifiableProxy
 from pytypes.tests.migrated_contracts.NodeOperatorsRegistryMigrated import NodeOperatorsRegistryMigrated
-from pytypes.core.contracts._089.utils.access.AccessControl import AccessControl
+from pytypes.core.contracts._0_8_9.utils.access.AccessControl import AccessControl
 
 from .beacon import BeaconChain
 from .fork_data import *

@@ -4,29 +4,29 @@ from typing import Callable, Dict, Tuple
 from ordered_set import OrderedSet
 from wake.testing import *
 from wake.testing.fuzzing import *
-from pytypes.core.contracts._089.interfaces.IStakingModule import IStakingModule
-from pytypes.core.contracts._089.proxy.OssifiableProxy import OssifiableProxy
-from pytypes.core.contracts._089.test_helpers.StakingModuleMock import StakingModuleMock
+from pytypes.core.contracts._0_8_9.interfaces.IStakingModule import IStakingModule
+from pytypes.core.contracts._0_8_9.proxy.OssifiableProxy import OssifiableProxy
+from pytypes.core.contracts._0_8_9.test_helpers.StakingModuleMock import StakingModuleMock
 from pytypes.core.contracts.common.lib.MinFirstAllocationStrategy import (
     MinFirstAllocationStrategy,
 )
 from pytypes.tests.migrated_contracts.NodeOperatorsRegistryMigrated import (
     NodeOperatorsRegistryMigrated,
 )
-from pytypes.core.contracts._089.oracle.ValidatorsExitBusOracle import (
+from pytypes.core.contracts._0_8_9.oracle.ValidatorsExitBusOracle import (
     ValidatorsExitBusOracle,
 )
-from pytypes.core.contracts._089.oracle.HashConsensus import HashConsensus
-from pytypes.core.contracts._089.oracle.AccountingOracle import (
+from pytypes.core.contracts._0_8_9.oracle.HashConsensus import HashConsensus
+from pytypes.core.contracts._0_8_9.oracle.AccountingOracle import (
     AccountingOracle,
     ILegacyOracle,
 )
-from pytypes.core.contracts._089.sanity_checks.OracleReportSanityChecker import (
+from pytypes.core.contracts._0_8_9.sanity_checks.OracleReportSanityChecker import (
     OracleReportSanityChecker,
     LimitsList,
 )
 from pytypes.tests.migrated_contracts.utils_and_lib.SigningKeys import SigningKeys
-from pytypes.core.contracts._089.lib.PositiveTokenRebaseLimiter import (
+from pytypes.core.contracts._0_8_9.lib.PositiveTokenRebaseLimiter import (
     TokenRebaseLimiterData,
 )
 import copy
@@ -327,7 +327,7 @@ class LidoFuzzTest(CsmFuzzTest):
 
         # deploy oracle
         self.beacon_chain = BeaconChain(
-            default_chain,
+            chain,
         )
 
         self.ao = deploy_accounting_oracle(
@@ -358,7 +358,7 @@ class LidoFuzzTest(CsmFuzzTest):
         )
 
         # legacy oracle ao overwrite
-        default_chain.chain_interface.set_storage_at(
+        chain.chain_interface.set_storage_at(
             str(LEGACY_ORACLE.address),
             int.from_bytes(keccak256(b"lido.LidoOracle.accountingOracle")),
             int.from_bytes(bytes(self.ao.address)).to_bytes(32, "big"),
@@ -535,7 +535,7 @@ class LidoFuzzTest(CsmFuzzTest):
         no_len = random_int(1, len(nos))
         nors = random.choices(nos, k=no_len)
 
-        node_operator_ids_encoded = abi.encode_packed([uint64(no.id) for no in nors])
+        node_operator_ids_encoded = b"".join([uint64(no.id).to_bytes(8, "big") for no in nors])
         new_keys_counts = []
         if type == "vetted":
             new_keys_counts = [
@@ -552,7 +552,7 @@ class LidoFuzzTest(CsmFuzzTest):
                 for no in nors
             ]
 
-        new_keys_count_encoded = abi.encode_packed(new_keys_counts)
+        new_keys_count_encoded = b"".join([uint128(count).to_bytes(16, "big") for count in new_keys_counts])
 
         return (
             node_operator_ids_encoded,

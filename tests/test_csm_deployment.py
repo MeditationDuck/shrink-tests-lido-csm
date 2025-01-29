@@ -120,8 +120,9 @@ def test_deployment():
         chain=pre_chain,
     )
     cs_verifier2 = CSVerifier("0x3Dfc50f22aCA652a0a6F28a0F892ab62074b5583", chain=post_chain)
-    assert cs_verifier.code == cs_verifier2.code
-    assert cs_verifier.address == cs_verifier2.address
+    # CSVerifier was modified in revision 3.0
+    #assert cs_verifier.code == cs_verifier2.code
+    #assert cs_verifier.address == cs_verifier2.address
 
     sender.nonce += 4
 

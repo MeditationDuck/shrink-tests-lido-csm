@@ -1,25 +1,25 @@
 from wake.testing import Account, Address
-from pytypes.core.contracts._0611.deposit_contract import IDepositContract
-from pytypes.core.contracts._089.Burner import Burner
-from pytypes.core.contracts._089.DepositSecurityModule import DepositSecurityModule
-from pytypes.core.contracts._089.LidoLocator import LidoLocator
-from pytypes.core.contracts._089.OracleDaemonConfig import OracleDaemonConfig
-from pytypes.core.contracts._089.StakingRouter import StakingRouter
-from pytypes.core.contracts._089.WithdrawalQueue import WithdrawalQueue
-from pytypes.core.contracts._089.WithdrawalQueueERC721 import WithdrawalQueueERC721
+from pytypes.core.contracts._0_6_11.deposit_contract import IDepositContract
+from pytypes.core.contracts._0_8_9.Burner import Burner
+from pytypes.core.contracts._0_8_9.DepositSecurityModule import DepositSecurityModule
+from pytypes.core.contracts._0_8_9.LidoLocator import LidoLocator
+from pytypes.core.contracts._0_8_9.OracleDaemonConfig import OracleDaemonConfig
+from pytypes.core.contracts._0_8_9.StakingRouter import StakingRouter
+from pytypes.core.contracts._0_8_9.WithdrawalQueue import WithdrawalQueue
+from pytypes.core.contracts._0_8_9.WithdrawalQueueERC721 import WithdrawalQueueERC721
 
-from pytypes.core.contracts._089.WithdrawalVault import WithdrawalVault
-from pytypes.core.contracts._089.oracle.AccountingOracle import AccountingOracle
+from pytypes.core.contracts._0_8_9.WithdrawalVault import WithdrawalVault
+from pytypes.core.contracts._0_8_9.oracle.AccountingOracle import AccountingOracle
 
-from pytypes.core.contracts._089.oracle.ValidatorsExitBusOracle import ValidatorsExitBusOracle
-from pytypes.core.contracts._089.sanity_checks.OracleReportSanityChecker import OracleReportSanityChecker
+from pytypes.core.contracts._0_8_9.oracle.ValidatorsExitBusOracle import ValidatorsExitBusOracle
+from pytypes.core.contracts._0_8_9.sanity_checks.OracleReportSanityChecker import OracleReportSanityChecker
 from pytypes.core.contracts.common.interfaces.ILidoLocator import ILidoLocator
 from pytypes.tests.migrated_contracts.LidoMigrated import LidoMigrated
 from pytypes.tests.migrated_contracts.aragon.os.acl.ACL import ACL
 from pytypes.tests.migrated_contracts.aragon.os.kernel.Kernel import Kernel
-from pytypes.core.contracts._089.oracle.HashConsensus import HashConsensus
-from pytypes.core.contracts._089.oracle.ValidatorsExitBusOracle import ValidatorsExitBusOracle
-from pytypes.core.contracts._0612.WstETH import WstETH
+from pytypes.core.contracts._0_8_9.oracle.HashConsensus import HashConsensus
+from pytypes.core.contracts._0_8_9.oracle.ValidatorsExitBusOracle import ValidatorsExitBusOracle
+from pytypes.core.contracts._0_6_12.WstETH import WstETH
 
 
 
