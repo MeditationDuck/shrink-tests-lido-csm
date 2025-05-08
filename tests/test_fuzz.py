@@ -4,6 +4,7 @@ from typing import Callable, Dict, Tuple
 from ordered_set import OrderedSet
 from wake.testing import *
 from wake.testing.fuzzing import *
+from wake.development.internal import ExternalEvent
 from pytypes.core.contracts._0_8_9.interfaces.IStakingModule import IStakingModule
 from pytypes.core.contracts._0_8_9.proxy.OssifiableProxy import OssifiableProxy
 from pytypes.core.contracts._0_8_9.test_helpers.StakingModuleMock import StakingModuleMock
@@ -2251,6 +2252,7 @@ class LidoFuzzTest(CsmFuzzTest):
                     event, NodeOperatorsRegistryMigrated.VettedSigningKeysCountChanged
                 ):
                     assert event.approvedValidatorsCount == keys_after
+                    assert False
                 else:
                     assert isinstance(event, CSModule.VettedSigningKeysCountChanged)
                     assert event.vettedKeysCount == keys_after
@@ -2940,11 +2942,12 @@ class LidoFuzzTest(CsmFuzzTest):
             self.shares[alice] += tx.return_value
 
             event = next(
-                (e for e in tx.events if isinstance(e, LidoMigrated.TransferShares)),
+                (e for e in tx.events if isinstance(e, ExternalEvent) and e._event_full_name == "Lido.TransferShares"),
                 None,
             )
             assert event is not None
-            assert event.to == alice.address
+            assert hasattr(event, "to")
+            assert getattr(event, "to") == alice.address
             logger.info(f"Alice submitted {value / (10**18)} ether.")
 
             for csm in self.csms.values():
@@ -2998,9 +3001,11 @@ class LidoFuzzTest(CsmFuzzTest):
         )
 
         event = next(
-            (e for e in tx.events if isinstance(e, LidoMigrated.TransferShares)), None
+            (e for e in tx.events if isinstance(e, ExternalEvent) and e._event_full_name == "Lido.TransferShares"), None
         )
         assert event is not None
+        assert hasattr(event, "sharesValue")
+        share_value =  getattr(event, "sharesValue")
 
         assert LIDO.sharesOf(alice) + event.sharesValue == self.shares[alice]
 
@@ -4566,7 +4571,7 @@ class LidoFuzzTest(CsmFuzzTest):
                 assert csm.accounting.totalBondShares() == LIDO.sharesOf(csm.accounting)
                 assert LIDO.sharesOf(csm.accounting) == 0
 
-    @invariant()
+    @flow()
     def go_future(self):
         if random_bool():
             chain.mine(lambda x: random_int(15 * 60, 30 * 60) + x)

@@ -14,7 +14,7 @@ from .fork_data import *
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-def revert_handler(e: TransactionRevertedError):
+def revert_handler(e: RevertError):
     if e.tx is not None:
         print(e.tx.call_trace)
 

@@ -1271,6 +1271,7 @@ class CsmFuzzTest(FuzzTest):
                 assert ST_ETH.sharesOf(no.rewards_account) == balance_before + claimed_shares
             else:
                 assert ST_ETH.sharesOf(no.rewards_account) == balance_before + pulled_shares
+                assert False
             self.shares[no.rewards_account] += claimed_shares
         else:
             assert WST_ETH.balanceOf(no.rewards_account) == balance_before + claimed_shares
